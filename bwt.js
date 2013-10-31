@@ -215,7 +215,8 @@ FS.dc3 = function(text, characterSetLength) {
     var labels = FS.createNewLabels(rPrimeSorted);
     var rPrimeRanks = FS.createRanks(rPrimeSorted);
     var rPrimeRelabeled = [];
-    var i, triple, rank, ch;
+    var sortedArray = [];
+    var i, j, triple, rank, ch;
 
     if (labels.size !== rPrimeSorted.length) {
         // Need to recurse to find true ordering for rPrimeSorted
@@ -239,6 +240,12 @@ FS.dc3 = function(text, characterSetLength) {
 
     // At this poitn r0 and rPrimeSorted are perfectly sorted
     // Begin the merge...
+    i = 0;
+    j = 0;
+
+    var r0Triple, rPrimeTriple;
+    while (i < r0Sorted.length && j < rPrimeSorted.length) {
+    }
 };
 
 /**
