@@ -115,6 +115,49 @@ FS.radixSortTuples = function(lists, maxValue) {
     return finalSorted;
 };
 
+FS.radixSortR0 = function(lists, maxValue, ranks) {
+    var BASE = 2;
+    
+    var finalSorted, sortedValues, listLength, tuple, key;
+    var j, pos;
+
+    for (pos = BASE - 1; pos >= 0; pos--) {
+        finalSorted = [];
+        sortedValues = {};
+
+        listLength = lists.length;
+        for (j = 0; j < listLength; j++) {
+            if (pos === 0) {
+                if (!(str(tuple.get(pos).ch) in sortedValues)) {
+                    sortedValues[str(tuple.get(pos).ch)] = [];
+                }
+                sortedValues[str(tuple.get(pos).ch)].push(tuple);
+            } else {
+                if (str(tuple.get(pos).ch) in ranks) {
+                    if (!(ranks[tuple.get(pos).hashCode()] in sortedValues)) {
+                        sortedValues[ranks[tuple.get(pos).hashCode()]] = [];
+                    }
+                    sortedValues[ranks[tuple.get(pos).hashCode()]].push(tuple);
+                } else {
+                    if (!('0' in sortedValues)) {
+                        sortedValues['0'] = [];
+                    }
+                    sortedValues['0'].push(tuple);
+                }
+            }
+        }
+
+        for (j = 0; j < maxValue; j++) {
+            key = str(j);
+            if (key in sortedValues) {
+                finalSorted = finalSorted.concat(sortedValues[key]);
+            }
+        }
+        lists = finalSorted;
+    }
+    return finalSorted;
+};
+
 /**
  * FS.createNewLabels
  * Generates a dictionary of new labels for a sorted array of tuples.
@@ -127,7 +170,7 @@ FS.createNewLabels = function(sortedArray) {
     var currentValue = 0,
         labels = {};
         currentTuple = null;
-    for(var i = 0; i < sortedArray.length; i++) {
+    for (var i = 0; i < sortedArray.length; i++) {
         tuple = sortedArray[i].toString();
         if (tuple !== currentTuple) {
             currentTuple = tuple;
@@ -138,6 +181,15 @@ FS.createNewLabels = function(sortedArray) {
 
     labels.size = currentValue;
     return labels;
+};
+
+FS.createRanks = function(sortedArray) {
+    var ranks = {};
+
+    for (var i = 0; i < sortedArray.length; i++) {
+        ranks[sortedArray[i].get(0).hashCode()] = i;
+    }
+    return ranks;
 };
 
 /**
@@ -158,7 +210,35 @@ FS.dc3 = function(text, characterSetLength) {
     var r2 = this._create_r_n(2, text);
 
     var rPrime = r1.concat(r2);
-    var rPrimeSorted = FS.radixSort(rPrime, characterSetLength + 1); //we add 1 for 0 padding
+    var rPrimeSorted = FS.radixSortTuples(rPrime, characterSetLength + 1); //we add 1 for 0 padding
+
+    var labels = FS.createNewLabels(rPrimeSorted);
+    var rPrimeRanks = FS.createRanks(rPrimeSorted);
+    var rPrimeRelabeled = [];
+    var i, triple, rank, ch;
+
+    if (labels.size !== rPrimeSorted.length) {
+        // Need to recurse to find true ordering for rPrimeSorted
+        for (i = 0; i < rPrime.length; i++) {
+            rPrimeRelabeled.push(labels[rPrime[i].toString()]);
+        }
+
+        var rPrimeSuffixArray = FS.dc3(rPrimeRelabeled, labels.size);
+        rPrimeRanks = {};
+        rPrimeSorted = [];
+
+        for (rank = 0; rank < rPrimeSuffixArray.length; rank++) {
+            triple = rPrime[rank];
+            charPair = triple.get(0);
+            rPrimeRanks[charPair.hashCode()] = rank;
+            rPrimeSorted.push(triple);
+        }
+    }
+
+    var r0Sorted = FS.radixSortR0(r0, Math.max(characterSetLength + 1, rPrime.length), rPrimeRanks);
+
+    // At this poitn r0 and rPrimeSorted are perfectly sorted
+    // Begin the merge...
 };
 
 /**
