@@ -57,7 +57,41 @@ Tuple.prototype.get = function(i) {
     }
 };
 
-FS.radixSort = function(lists, pos, maxValue, n, map) {
+/**
+ * Helper method for converting number to string
+ */
+var str = function(i) {
+    return "" + i;
+};
+
+FS.radixSortTuples = function(lists, maxValue) {
+    var BASE = 3;
+    
+    var finalSorted, sortedValues, listLength, tuple, key;
+    var j, pos;
+
+    for (pos = BASE - 1; pos >= 0; pos--) {
+        finalSorted = [];
+        sortedValues = {};
+
+        listLength = lists.length;
+        for (j = 0; j < listLength; j++) {
+            tuple = lists[j];
+            if (!(str(tuple.get(pos).ch) in sortedValues)) {
+                sortedValues[str(tuple.get(pos).ch)] = [];
+            }
+            sortedValues[str(tuple.get(pos).ch)].push(tuple);
+        }
+
+        for (j = 0; j < maxValue; j++) {
+            key = str(j);
+            if (key in sortedValues) {
+                finalSorted = finalSorted.concat(sortedValues[key]);
+            }
+        }
+        lists = finalSorted;
+    }
+    return finalSorted;
 };
 
 /**
@@ -76,6 +110,9 @@ FS.dc3 = function(text, characterSetLength) {
     var r0 = this._create_r_n(0, text);
     var r1 = this._create_r_n(1, text);
     var r2 = this._create_r_n(2, text);
+
+    var rPrime = r1.concat(r2);
+    var rPrimeSorted = FS.radixSort(rPrime, characterSetLength + 1); //we add 1 for 0 padding
 };
 
 /**

@@ -27,4 +27,26 @@ describe('FS', function() {
             assert.equal(Math.ceil(numberText.slice(2).length / 3), r2.length);
         });
     });
+
+    describe('#radixSortTuples(lists, maxValue)', function() {
+        it('should return a sorted list of triplets (tuples)', function() {
+            var text = [1, 2, 2, 3, 2, 1, 1, 1, 1];
+            var numberText = FS._convertTextToCharPair(text);
+            var r0 = FS._create_r_n(0, numberText);
+            var r0Sorted = FS.radixSortTuples(r0, 4);
+            assert.equal(3, r0Sorted.length);
+            
+            var idx = "" + 0;
+            var tupleCheck = "" + r0Sorted[idx].get(0).ch + r0Sorted[idx].get(1).ch + r0Sorted[idx].get(2).ch;
+            assert.equal("111", tupleCheck);
+
+            idx = "" + 1;
+            tupleCheck = "" + r0Sorted[idx].get(0).ch + r0Sorted[idx].get(1).ch + r0Sorted[idx].get(2).ch;
+            assert.equal("122", tupleCheck);
+
+            idx = "" + 2;
+            tupleCheck = "" + r0Sorted[idx].get(0).ch + r0Sorted[idx].get(1).ch + r0Sorted[idx].get(2).ch;
+            assert.equal("321", tupleCheck);
+        });
+    });
 });
