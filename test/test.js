@@ -67,17 +67,31 @@ describe('FS', function() {
 
     describe('#dc3(text)', function() {
         it('should return a suffix array of text', function() {
-            var text = [5, 4, 3, 2, 1, 1, 1, 2];
-            var suffixArray = FS.dc3(text, 5);
+            var text = [6, 5, 4, 3, 2, 2, 2, 3, 1];
+            var suffixArray = FS.dc3(text, 6);
             assert.equal(text.length, suffixArray.length);
-            assert.equal(4, suffixArray[0]);
-            assert.equal(5, suffixArray[1]);
-            assert.equal(6, suffixArray[2]);
-            assert.equal(3, suffixArray[3]);
+            assert.equal(8, suffixArray[0]);
+            assert.equal(4, suffixArray[1]);
+            assert.equal(5, suffixArray[2]);
+            assert.equal(6, suffixArray[3]);
             assert.equal(7, suffixArray[4]);
-            assert.equal(2, suffixArray[5]);
-            assert.equal(1, suffixArray[6]);
-            assert.equal(0, suffixArray[7]);
+            assert.equal(3, suffixArray[5]);
+            assert.equal(2, suffixArray[6]);
+            assert.equal(1, suffixArray[7]);
+            assert.equal(0, suffixArray[8]);
+        });
+        it('should return a suffix array of text', function() {
+            var text = [2, 2, 3, 2, 3, 2, 3, 1];
+            var suffixArray = FS.dc3(text, 3);
+            assert.equal(text.length, suffixArray.length);
+            assert.equal(7, suffixArray[0]);
+            assert.equal(0, suffixArray[1]);
+            assert.equal(5, suffixArray[2]);
+            assert.equal(3, suffixArray[3]);
+            assert.equal(1, suffixArray[4]);
+            assert.equal(6, suffixArray[5]);
+            assert.equal(4, suffixArray[6]);
+            assert.equal(2, suffixArray[7]);
         });
     });
 });

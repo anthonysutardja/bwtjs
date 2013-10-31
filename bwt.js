@@ -89,7 +89,7 @@ FS.radixSortTuples = function(lists, maxValue) {
     var BASE = 3;
     
     var finalSorted, sortedValues, listLength, tuple, key;
-    var j, pos;
+    var j, pos, d;
 
     for (pos = BASE - 1; pos >= 0; pos--) {
         finalSorted = [];
@@ -103,11 +103,13 @@ FS.radixSortTuples = function(lists, maxValue) {
             }
             sortedValues[str(tuple.get(pos).ch)].push(tuple);
         }
-
+        d = new Date();
         for (j = 0; j < maxValue; j++) {
             key = str(j);
             if (key in sortedValues) {
-                finalSorted = finalSorted.concat(sortedValues[key]);
+                //finalSorted = finalSorted.concat(sortedValues[key]);
+                //finalSorted.push.apply(finalSorted, sortedValues[key]);
+                FS.extendArray(finalSorted, sortedValues[key]);
             }
         }
         lists = finalSorted;
@@ -151,12 +153,21 @@ FS.radixSortR0 = function(lists, maxValue, ranks) {
         for (j = 0; j < maxValue; j++) {
             key = str(j);
             if (key in sortedValues) {
-                finalSorted = finalSorted.concat(sortedValues[key]);
+                //finalSorted.push.apply(finalSorted, sortedValues[key]);
+                FS.extendArray(finalSorted, sortedValues[key]);
             }
         }
         lists = finalSorted;
     }
     return finalSorted;
+};
+
+FS.extendArray = function(listA, listB) {
+    var length = listB.length;
+    for (var i = 0; i < listB.length; i++) {
+        listA.push(listB[i]);
+    }
+    return listA;
 };
 
 /**
@@ -230,7 +241,7 @@ FS.dc3 = function(text, characterSetLength) {
         rPrimeSorted = [];
 
         for (rank = 0; rank < rPrimeSuffixArray.length; rank++) {
-            triple = rPrime[rank];
+            triple = rPrime[rPrimeSuffixArray[rank]];
             charPair = triple.get(0);
             rPrimeRanks[charPair.hashCode()] = rank;
             rPrimeSorted.push(triple);
@@ -338,6 +349,23 @@ FS._convertTextToCharPair = function(text) {
     return numberText;
 };
 
+FS.convertUnicodeToNumberArray = function(text) {
+    var numArray = [];
+    text = text.split("\n").slice(1).join("");
+    for (var i = 0; i < text.length; i++) {
+        if (text[i] === "$") {
+            numArray.push(1);
+        } else {
+            numArray.push(text.charCodeAt(i) - 63);
+        }
+    }
+    return numArray;
+};
+
+FS.processFASTCRAP = function(text) {
+    return text.split("\n").slice(1).join("");
+};
+
 
 // Production steps of ECMA-262, Edition 5, 15.4.4.19
 // Reference: http://es5.github.com/#x15.4.4.19
@@ -414,3 +442,10 @@ if (!Array.prototype.map) {
 }
 
 module.exports = FS;
+
+var filesys = require('fs');
+filesys.readFile('./sample', {encoding: 'utf-8'},function(err, data) {
+    var numArr = FS.convertUnicodeToNumberArray(data);
+    var blah = FS.dc3(numArr, 60);
+    console.log(blah.length);
+});
