@@ -44,6 +44,13 @@ Tuple.prototype.hashCode = function() {
 };
 
 /**
+ * @return {string} The tuple's unique val
+ */
+Tuple.prototype.toString = function() {
+    return str(this._a.ch) + ':' + str(this._b.ch) + ':' + str(this._c.ch);
+};
+
+/**
  * @param {number} i is the index of the tuple we wish to access
  * @return {{ch:number, idx:number}} The CharPair of index i
  */
@@ -57,6 +64,13 @@ Tuple.prototype.get = function(i) {
     }
 };
 
+Tuple.prototype.equals = function(tuple) {
+    if (tuple === null) {
+        return false;
+    }
+    return this._a === tuple._a && this._b === tuple._b && this._c === tuple._c;
+};
+
 /**
  * Helper method for converting number to string
  */
@@ -64,6 +78,13 @@ var str = function(i) {
     return "" + i;
 };
 
+/**
+ * FS.radixSortTuples
+ * Radix sort for a list of tuples. Sort by each position in the tuple.
+ * @param {Array<Tuple>} lists is a list of tuples
+ * @param {number} maxValue is the maximum character
+ * @return {Array<Tuple>}
+ */
 FS.radixSortTuples = function(lists, maxValue) {
     var BASE = 3;
     
@@ -92,6 +113,31 @@ FS.radixSortTuples = function(lists, maxValue) {
         lists = finalSorted;
     }
     return finalSorted;
+};
+
+/**
+ * FS.createNewLabels
+ * Generates a dictionary of new labels for a sorted array of tuples.
+ *
+ * @param {Array<Tuple>} sortedArray is a sorted array of tuples
+ * @return {Object<*,*>}
+ */
+FS.createNewLabels = function(sortedArray) {
+    var tup;
+    var currentValue = 0,
+        labels = {};
+        currentTuple = null;
+    for(var i = 0; i < sortedArray.length; i++) {
+        tuple = sortedArray[i].toString();
+        if (tuple !== currentTuple) {
+            currentTuple = tuple;
+            currentValue += 1;
+        }
+        labels[tuple] = currentValue;
+    }
+
+    labels.size = currentValue;
+    return labels;
 };
 
 /**

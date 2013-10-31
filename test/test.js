@@ -49,4 +49,18 @@ describe('FS', function() {
             assert.equal("321", tupleCheck);
         });
     });
+
+
+    describe('#createNewLabels(sortedArray)', function() {
+        it('should return an object with new labels for tuples', function() {
+            var text = [1, 2, 2, 1, 1, 1, 1, 1, 1];
+            var numberText = FS._convertTextToCharPair(text);
+            var r0 = FS._create_r_n(0, numberText);
+            var r0Sorted = FS.radixSortTuples(r0, 4);
+            var labels = FS.createNewLabels(r0Sorted);
+            assert.equal(2, labels.size);
+            assert.equal(1, labels[r0Sorted[0].toString()]);
+            assert.equal(2, labels[r0Sorted[2].toString()]);
+        });
+    });
 });
