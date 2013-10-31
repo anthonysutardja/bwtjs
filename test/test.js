@@ -23,6 +23,7 @@ describe('FS', function() {
             assert.equal(Math.ceil(numberText.length / 3), r0.length);
             var r1 = FS._create_r_n(1, numberText);
             assert.equal(Math.ceil(numberText.slice(1).length / 3), r1.length);
+            assert.equal(0, r1[1].get(2).ch);
             var r2 = FS._create_r_n(2, numberText);
             assert.equal(Math.ceil(numberText.slice(2).length / 3), r2.length);
         });
@@ -61,6 +62,22 @@ describe('FS', function() {
             assert.equal(2, labels.size);
             assert.equal(1, labels[r0Sorted[0].toString()]);
             assert.equal(2, labels[r0Sorted[2].toString()]);
+        });
+    });
+
+    describe('#dc3(text)', function() {
+        it('should return a suffix array of text', function() {
+            var text = [5, 4, 3, 2, 1, 1, 1, 2];
+            var suffixArray = FS.dc3(text, 5);
+            assert.equal(text.length, suffixArray.length);
+            assert.equal(4, suffixArray[0]);
+            assert.equal(5, suffixArray[1]);
+            assert.equal(6, suffixArray[2]);
+            assert.equal(3, suffixArray[3]);
+            assert.equal(7, suffixArray[4]);
+            assert.equal(2, suffixArray[5]);
+            assert.equal(1, suffixArray[6]);
+            assert.equal(0, suffixArray[7]);
         });
     });
 });

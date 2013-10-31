@@ -127,6 +127,7 @@ FS.radixSortR0 = function(lists, maxValue, ranks) {
 
         listLength = lists.length;
         for (j = 0; j < listLength; j++) {
+            tuple = lists[j];
             if (pos === 0) {
                 if (!(str(tuple.get(pos).ch) in sortedValues)) {
                     sortedValues[str(tuple.get(pos).ch)] = [];
@@ -238,14 +239,59 @@ FS.dc3 = function(text, characterSetLength) {
 
     var r0Sorted = FS.radixSortR0(r0, Math.max(characterSetLength + 1, rPrime.length), rPrimeRanks);
 
-    // At this poitn r0 and rPrimeSorted are perfectly sorted
+    // At this point r0 and rPrimeSorted are perfectly sorted
     // Begin the merge...
     i = 0;
     j = 0;
 
     var r0Triple, rPrimeTriple;
     while (i < r0Sorted.length && j < rPrimeSorted.length) {
+        r0Triple = r0Sorted[i];
+        rPrimeTriple = rPrimeSorted[j];
+
+        if (r0Triple.get(0).ch > rPrimeTriple.get(0).ch) {
+            sortedArray.push(rPrimeTriple.get(0).idx);
+            j += 1;
+        } else if (r0Triple.get(0).ch < rPrimeTriple.get(0).ch) {
+            sortedArray.push(r0Triple.get(0).idx);
+            i += 1;
+        } else if (rPrimeTriple.get(0).idx % 3 === 1) {
+            if (rPrimeRanks[r0Triple.get(1).hashCode()] > rPrimeRanks[rPrimeTriple.get(1).hashCode()]) {
+                sortedArray.push(rPrimeTriple.get(0).idx);
+                j += 1;
+            } else {
+                sortedArray.push(r0Triple.get(0).idx);
+                i += 1;
+            }
+        } else if (rPrimeTriple.get(0).idx % 3 === 2) {
+            if (r0Triple.get(1).ch > rPrimeTriple.get(1).ch) {
+                sortedArray.push(rPrimeTriple.get(0).idx);
+                j += 1;
+            } else if (r0Triple.get(1).ch < rPrimeTriple.get(1).ch) {
+                sortedArray.push(r0Triple.get(0).idx);
+                i += 1;
+            }else {
+                if (rPrimeRanks[r0Triple.get(2).hashCode()] > rPrimeRanks[rPrimeTriple.get(2).hashCode()]) {
+                    sortedArray.push(rPrimeTriple.get(0).idx);
+                    j += 1;
+                } else {
+                    sortedArray.push(r0Triple.get(0).idx);
+                    i += 1;
+                }
+            }
+        }
     }
+
+    // Append the rest of r0 if there is any left
+    while (i < r0Sorted.length) {
+        sortedArray.push(r0Sorted[i].get(0).idx);
+        i += 1;
+    }
+    while (j < rPrimeSorted.length) {
+        sortedArray.push(rPrimeSorted[j].get(0).idx);
+        j += 1;
+    }
+    return sortedArray;
 };
 
 /**
