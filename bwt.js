@@ -1,4 +1,4 @@
-var FS = {};
+var HTS = {};
 
 
 /**
@@ -79,13 +79,13 @@ var str = function(i) {
 };
 
 /**
- * FS.radixSortTuples
+ * HTS.radixSortTuples
  * Radix sort for a list of tuples. Sort by each position in the tuple.
  * @param {Array<Tuple>} lists is a list of tuples
  * @param {number} maxValue is the maximum character
  * @return {Array<Tuple>}
  */
-FS.radixSortTuples = function(lists, maxValue) {
+HTS.radixSortTuples = function(lists, maxValue) {
     var BASE = 3;
     
     var finalSorted, sortedValues, listLength, tuple, key;
@@ -109,7 +109,7 @@ FS.radixSortTuples = function(lists, maxValue) {
             if (key in sortedValues) {
                 //finalSorted = finalSorted.concat(sortedValues[key]);
                 //finalSorted.push.apply(finalSorted, sortedValues[key]);
-                FS.extendArray(finalSorted, sortedValues[key]);
+                HTS.extendArray(finalSorted, sortedValues[key]);
             }
         }
         lists = finalSorted;
@@ -117,7 +117,7 @@ FS.radixSortTuples = function(lists, maxValue) {
     return finalSorted;
 };
 
-FS.radixSortR0 = function(lists, maxValue, ranks) {
+HTS.radixSortR0 = function(lists, maxValue, ranks) {
     var BASE = 2;
     
     var finalSorted, sortedValues, listLength, tuple, key;
@@ -154,7 +154,7 @@ FS.radixSortR0 = function(lists, maxValue, ranks) {
             key = str(j);
             if (key in sortedValues) {
                 //finalSorted.push.apply(finalSorted, sortedValues[key]);
-                FS.extendArray(finalSorted, sortedValues[key]);
+                HTS.extendArray(finalSorted, sortedValues[key]);
             }
         }
         lists = finalSorted;
@@ -162,7 +162,7 @@ FS.radixSortR0 = function(lists, maxValue, ranks) {
     return finalSorted;
 };
 
-FS.extendArray = function(listA, listB) {
+HTS.extendArray = function(listA, listB) {
     var length = listB.length;
     for (var i = 0; i < listB.length; i++) {
         listA.push(listB[i]);
@@ -171,13 +171,13 @@ FS.extendArray = function(listA, listB) {
 };
 
 /**
- * FS.createNewLabels
+ * HTS.createNewLabels
  * Generates a dictionary of new labels for a sorted array of tuples.
  *
  * @param {Array<Tuple>} sortedArray is a sorted array of tuples
  * @return {Object<*,*>}
  */
-FS.createNewLabels = function(sortedArray) {
+HTS.createNewLabels = function(sortedArray) {
     var tup;
     var currentValue = 0,
         labels = {};
@@ -195,7 +195,7 @@ FS.createNewLabels = function(sortedArray) {
     return labels;
 };
 
-FS.createRanks = function(sortedArray) {
+HTS.createRanks = function(sortedArray) {
     var ranks = {};
 
     for (var i = 0; i < sortedArray.length; i++) {
@@ -205,7 +205,7 @@ FS.createRanks = function(sortedArray) {
 };
 
 /**
- * FS.dc3
+ * HTS.dc3
  * An implementation of the the Karkkainen-Sanders algorithm also known as the
  * difference cover modulo 3.
  *
@@ -214,7 +214,7 @@ FS.createRanks = function(sortedArray) {
  * @param {Array<number>} text is string over the numbered alphabet
  * @param {number} characterSetLength is the size of the alphabet
  */
-FS.dc3 = function(text, characterSetLength) {
+HTS.dc3 = function(text, characterSetLength) {
     text = this._convertTextToCharPair(text);
 
     var r0 = this._create_r_n(0, text);
@@ -222,10 +222,10 @@ FS.dc3 = function(text, characterSetLength) {
     var r2 = this._create_r_n(2, text);
 
     var rPrime = r1.concat(r2);
-    var rPrimeSorted = FS.radixSortTuples(rPrime, characterSetLength + 1); //we add 1 for 0 padding
+    var rPrimeSorted = HTS.radixSortTuples(rPrime, characterSetLength + 1); //we add 1 for 0 padding
 
-    var labels = FS.createNewLabels(rPrimeSorted);
-    var rPrimeRanks = FS.createRanks(rPrimeSorted);
+    var labels = HTS.createNewLabels(rPrimeSorted);
+    var rPrimeRanks = HTS.createRanks(rPrimeSorted);
     var rPrimeRelabeled = [];
     var sortedArray = [];
     var i, j, triple, rank, ch;
@@ -236,7 +236,7 @@ FS.dc3 = function(text, characterSetLength) {
             rPrimeRelabeled.push(labels[rPrime[i].toString()]);
         }
 
-        var rPrimeSuffixArray = FS.dc3(rPrimeRelabeled, labels.size);
+        var rPrimeSuffixArray = HTS.dc3(rPrimeRelabeled, labels.size);
         rPrimeRanks = {};
         rPrimeSorted = [];
 
@@ -248,7 +248,7 @@ FS.dc3 = function(text, characterSetLength) {
         }
     }
 
-    var r0Sorted = FS.radixSortR0(r0, Math.max(characterSetLength + 1, rPrime.length), rPrimeRanks);
+    var r0Sorted = HTS.radixSortR0(r0, Math.max(characterSetLength + 1, rPrime.length), rPrimeRanks);
 
     // At this point r0 and rPrimeSorted are perfectly sorted
     // Begin the merge...
@@ -306,12 +306,12 @@ FS.dc3 = function(text, characterSetLength) {
 };
 
 /**
- * FS._create_rn will create the residual sets R0, R1, and R2 with different offsets.
+ * HTS._create_rn will create the residual sets R0, R1, and R2 with different offsets.
  *
  * @param {number} n is either 0, 1, 2 -- the offset where we start
  * @param {text} text is an array of number characters
  */
-FS._create_r_n = function(n, text) {
+HTS._create_r_n = function(n, text) {
     var numExpand;
     var splicedText = text.slice(n);
     var rn = [],
@@ -342,14 +342,14 @@ FS._create_r_n = function(n, text) {
     return rn;
 };
 
-FS._convertTextToCharPair = function(text) {
+HTS._convertTextToCharPair = function(text) {
     var numberText = text.map(function(ch, idx) {
         return new CharPair(ch, idx);
     });
     return numberText;
 };
 
-FS.convertUnicodeToNumberArray = function(text) {
+HTS.convertUnicodeToNumberArray = function(text) {
     var numArray = [];
     text = text.split("\n").slice(1).join("");
     for (var i = 0; i < text.length; i++) {
@@ -362,7 +362,7 @@ FS.convertUnicodeToNumberArray = function(text) {
     return numArray;
 };
 
-FS.processFASTCRAP = function(text) {
+HTS.processFASTCRAP = function(text) {
     return text.split("\n").slice(1).join("");
 };
 
@@ -441,4 +441,4 @@ if (!Array.prototype.map) {
     };      
 }
 
-module.exports = FS;
+module.exports = HTS;

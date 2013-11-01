@@ -1,11 +1,11 @@
 var assert = require("assert");
-var FS = require("../bwt.js");
+var HTS = require("../bwt.js");
 
-describe('FS', function() {
+describe('HTS', function() {
     describe('#_convertTextToCharPair(text)', function() {
         it('should return a list of charpairs', function() {
             var text = [1, 2, 2, 3, 2, 1];
-            var numberText = FS._convertTextToCharPair(text);
+            var numberText = HTS._convertTextToCharPair(text);
             numberText.forEach(function(el, idx) {
                 assert.equal(idx, el.idx);
                 assert.equal(text[idx], el.ch);
@@ -18,13 +18,13 @@ describe('FS', function() {
     describe('#_create_r_n(n, text)', function() {
         it('should return a list of triplets (tuples) when n = {0,1,2}', function() {
             var text = [1, 2, 2, 3, 2, 1];
-            var numberText = FS._convertTextToCharPair(text);
-            var r0 = FS._create_r_n(0, numberText);
+            var numberText = HTS._convertTextToCharPair(text);
+            var r0 = HTS._create_r_n(0, numberText);
             assert.equal(Math.ceil(numberText.length / 3), r0.length);
-            var r1 = FS._create_r_n(1, numberText);
+            var r1 = HTS._create_r_n(1, numberText);
             assert.equal(Math.ceil(numberText.slice(1).length / 3), r1.length);
             assert.equal(0, r1[1].get(2).ch);
-            var r2 = FS._create_r_n(2, numberText);
+            var r2 = HTS._create_r_n(2, numberText);
             assert.equal(Math.ceil(numberText.slice(2).length / 3), r2.length);
         });
     });
@@ -32,9 +32,9 @@ describe('FS', function() {
     describe('#radixSortTuples(lists, maxValue)', function() {
         it('should return a sorted list of triplets (tuples)', function() {
             var text = [1, 2, 2, 3, 2, 1, 1, 1, 1];
-            var numberText = FS._convertTextToCharPair(text);
-            var r0 = FS._create_r_n(0, numberText);
-            var r0Sorted = FS.radixSortTuples(r0, 4);
+            var numberText = HTS._convertTextToCharPair(text);
+            var r0 = HTS._create_r_n(0, numberText);
+            var r0Sorted = HTS.radixSortTuples(r0, 4);
             assert.equal(3, r0Sorted.length);
             
             var idx = "" + 0;
@@ -55,10 +55,10 @@ describe('FS', function() {
     describe('#createNewLabels(sortedArray)', function() {
         it('should return an object with new labels for tuples', function() {
             var text = [1, 2, 2, 1, 1, 1, 1, 1, 1];
-            var numberText = FS._convertTextToCharPair(text);
-            var r0 = FS._create_r_n(0, numberText);
-            var r0Sorted = FS.radixSortTuples(r0, 4);
-            var labels = FS.createNewLabels(r0Sorted);
+            var numberText = HTS._convertTextToCharPair(text);
+            var r0 = HTS._create_r_n(0, numberText);
+            var r0Sorted = HTS.radixSortTuples(r0, 4);
+            var labels = HTS.createNewLabels(r0Sorted);
             assert.equal(2, labels.size);
             assert.equal(1, labels[r0Sorted[0].toString()]);
             assert.equal(2, labels[r0Sorted[2].toString()]);
@@ -68,7 +68,7 @@ describe('FS', function() {
     describe('#dc3(text)', function() {
         it('should return a suffix array of text', function() {
             var text = [6, 5, 4, 3, 2, 2, 2, 3, 1];
-            var suffixArray = FS.dc3(text, 6);
+            var suffixArray = HTS.dc3(text, 6);
             assert.equal(text.length, suffixArray.length);
             assert.equal(8, suffixArray[0]);
             assert.equal(4, suffixArray[1]);
@@ -82,7 +82,7 @@ describe('FS', function() {
         });
         it('should return a suffix array of text', function() {
             var text = [2, 2, 3, 2, 3, 2, 3, 1];
-            var suffixArray = FS.dc3(text, 3);
+            var suffixArray = HTS.dc3(text, 3);
             assert.equal(text.length, suffixArray.length);
             assert.equal(7, suffixArray[0]);
             assert.equal(0, suffixArray[1]);
