@@ -107,4 +107,20 @@ describe('HTS', function() {
         });
     });
 
+    describe('#sortCharacters(text)', function() {
+        it('should return the sorted version of the text', function() {
+            assert.equal('ahnnoty', HTS.sortCharacters('anthony'));
+            assert.equal('eiknv', HTS.sortCharacters('kevin'));
+            assert.equal('AAaaaa', HTS.sortCharacters('aAaAaa'));
+        });
+    });
+
+    describe('#firstOccurenceFactory(text)', function() {
+        it('should return the first occurences given a first column of the bwt', function() {
+            var m1 = HTS.firstOccurenceFactory('$ahnnoty');
+            assert.equal(0, m1['$']);
+            assert.equal(3, m1['n']);
+            assert.equal(7, m1['y']);
+        });
+    });
 });

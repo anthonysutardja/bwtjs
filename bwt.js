@@ -104,7 +104,6 @@ HTS.radixSortTuples = function(lists, maxValue) {
             }
             sortedValues[str(tuple.get(pos).ch)].push(tuple);
         }
-        d = new Date();
         for (j = 0; j < maxValue; j++) {
             key = str(j);
             if (key in sortedValues) {
@@ -394,6 +393,38 @@ HTS.bwt = function(text) {
 };
 
 HTS.ibwt = function(text) {
+};
+
+HTS.sortCharacters = function(text) {
+    var counts = {};
+    for (var i = 0; i < text.length; i++) {
+        if (!(text[i] in counts)) {
+            counts[text[i]] = 0;
+        }
+        counts[text[i]] += 1;
+    }
+
+    var keys = Object.keys(counts).sort();
+    var sortedText = '';
+    var ch;
+    for (var k = 0; k < keys.length; k++) {
+        ch = keys[k];
+        for (var j = 0; j < counts[ch]; j++) {
+            sortedText += ch;
+        }
+    }
+    return sortedText;
+};
+
+HTS.firstOccurenceFactory = function(firstColumn) {
+    var M = {};
+    for (var i = 0; i < firstColumn.length; i++) {
+        ch = firstColumn[i];
+        if (!(ch in M)) {
+            M[ch] = i;
+        }
+    }
+    return M;
 };
 
 return HTS;
