@@ -1,5 +1,6 @@
-var HTS = {};
+var HTS = (function() {
 
+var HTS = {};
 
 /**
  * CharPair
@@ -107,8 +108,6 @@ HTS.radixSortTuples = function(lists, maxValue) {
         for (j = 0; j < maxValue; j++) {
             key = str(j);
             if (key in sortedValues) {
-                //finalSorted = finalSorted.concat(sortedValues[key]);
-                //finalSorted.push.apply(finalSorted, sortedValues[key]);
                 HTS.extendArray(finalSorted, sortedValues[key]);
             }
         }
@@ -136,7 +135,7 @@ HTS.radixSortR0 = function(lists, maxValue, ranks) {
                 }
                 sortedValues[str(tuple.get(pos).ch)].push(tuple);
             } else {
-                if (str(tuple.get(pos).ch) in ranks) {
+                if (tuple.get(pos).hashCode() in ranks) {
                     if (!(ranks[tuple.get(pos).hashCode()] in sortedValues)) {
                         sortedValues[ranks[tuple.get(pos).hashCode()]] = [];
                     }
@@ -153,7 +152,6 @@ HTS.radixSortR0 = function(lists, maxValue, ranks) {
         for (j = 0; j < maxValue; j++) {
             key = str(j);
             if (key in sortedValues) {
-                //finalSorted.push.apply(finalSorted, sortedValues[key]);
                 HTS.extendArray(finalSorted, sortedValues[key]);
             }
         }
@@ -162,6 +160,14 @@ HTS.radixSortR0 = function(lists, maxValue, ranks) {
     return finalSorted;
 };
 
+/**
+ * HTS.extendArray
+ * Extends listA with listB.
+ *
+ * @param {Array<Tuple>} listA is a list of tuples to be extended
+ * @param {Array<Tuple>} listB is a list of tuples
+ * @return {Array<Tuple>}
+ */
 HTS.extendArray = function(listA, listB) {
     var length = listB.length;
     for (var i = 0; i < listB.length; i++) {
@@ -298,6 +304,7 @@ HTS.dc3 = function(text, characterSetLength) {
         sortedArray.push(r0Sorted[i].get(0).idx);
         i += 1;
     }
+    // Append the rest of rPrime if there is any left
     while (j < rPrimeSorted.length) {
         sortedArray.push(rPrimeSorted[j].get(0).idx);
         j += 1;
@@ -349,9 +356,20 @@ HTS._convertTextToCharPair = function(text) {
     return numberText;
 };
 
+HTS.convertTextToNumberArray = function(text) {
+    var numArray = [];
+    for (var i = 0; i < text.length; i++) {
+        numArray.push(text.charCodeAt(i));
+    }
+    // Need to add a character not in the alphabet.
+    // 3 is the ASCII Character code for ETX
+    numArray.push(3);
+    return numArray;
+};
+
 HTS.convertUnicodeToNumberArray = function(text) {
     var numArray = [];
-    text = text.split("\n").slice(1).join("");
+    // text = text.split("\n").slice(1).join("");
     for (var i = 0; i < text.length; i++) {
         if (text[i] === "$") {
             numArray.push(1);
@@ -362,9 +380,24 @@ HTS.convertUnicodeToNumberArray = function(text) {
     return numArray;
 };
 
-HTS.processFASTCRAP = function(text) {
-    return text.split("\n").slice(1).join("");
+HTS.coerceToValidIndex = function(i, length) {
+    return (i + length) % length;
 };
+
+HTS.bwt = function(text) {
+    var suffixArray = HTS.dc3(HTS.convertUnicodeToNumberArray(text), 70);
+    var converted = [];
+    for (var i = 0; i < suffixArray.length; i++ ) {
+        converted.push(text[HTS.coerceToValidIndex(suffixArray[i] - 1, suffixArray.length)]);
+    }
+    return converted.join("");
+};
+
+HTS.ibwt = function(text) {
+};
+
+return HTS;
+})();
 
 
 // Production steps of ECMA-262, Edition 5, 15.4.4.19

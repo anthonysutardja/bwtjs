@@ -94,4 +94,17 @@ describe('HTS', function() {
             assert.equal(2, suffixArray[7]);
         });
     });
+
+    describe('#bwt(text)', function() {
+        it('should return the bwt of text', function() {
+            var result;
+
+            result = HTS.bwt('barbara$');
+            assert.equal('arbbr$aa', result);
+
+            result = HTS.bwt('hellojellomellojello$');
+            assert.equal('ojmhj$ooeeeellllollll', result);
+        });
+    });
+
 });
