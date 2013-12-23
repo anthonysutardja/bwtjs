@@ -416,7 +416,7 @@ HTS.sortCharacters = function(text) {
     return sortedText;
 };
 
-HTS.firstOccurenceFactory = function(firstColumn) {
+HTS.firstOccurrenceFactory = function(firstColumn) {
     var M = {};
     for (var i = 0; i < firstColumn.length; i++) {
         ch = firstColumn[i];
@@ -425,6 +425,18 @@ HTS.firstOccurenceFactory = function(firstColumn) {
         }
     }
     return M;
+};
+
+HTS.lastOccurrenceFactory = function(lastColumn) {
+    var N = {};
+    for (var i = 0; i < lastColumn.length; i++) {
+        ch = lastColumn[i];
+        if (!(ch in N)) {
+            N[ch] = [];
+        }
+        N[ch].push(i);
+    }
+    return N;
 };
 
 return HTS;

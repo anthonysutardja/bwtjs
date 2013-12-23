@@ -117,10 +117,36 @@ describe('HTS', function() {
 
     describe('#firstOccurenceFactory(text)', function() {
         it('should return the first occurences given a first column of the bwt', function() {
-            var m1 = HTS.firstOccurenceFactory('$ahnnoty');
-            assert.equal(0, m1['$']);
-            assert.equal(3, m1['n']);
-            assert.equal(7, m1['y']);
+            var m1 = HTS.firstOccurrenceFactory('$ahnnoty');
+            var results = ['$', 'n', 'y'];
+            assert.equal(0, m1[results[0]]);
+            assert.equal(3, m1[results[1]]);
+            assert.equal(7, m1[results[2]]);
+        });
+    });
+
+    describe('#lastOccurenceFactory(text)', function() {
+        it('should return the last occurence positions given a last column of the bwt', function() {
+            var s = 'arbbr$aa';
+            var n = HTS.lastOccurrenceFactory(s);
+            //01234567
+            //arbbr$aa
+
+            assert.equal(3, n[s[0]].length);
+            assert.equal(0, n[s[0]][0]);
+            assert.equal(6, n[s[0]][1]);
+            assert.equal(7, n[s[0]][2]);
+
+            assert.equal(2, n[s[1]].length);
+            assert.equal(1, n[s[1]][0]);
+            assert.equal(4, n[s[1]][1]);
+
+            assert.equal(2, n[s[2]].length);
+            assert.equal(2, n[s[2]][0]);
+            assert.equal(3, n[s[2]][1]);
+
+            assert.equal(1, n[s[5]].length);
+            assert.equal(5, n[s[5]][0]);
         });
     });
 });
