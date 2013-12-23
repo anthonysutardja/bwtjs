@@ -1,4 +1,4 @@
-var HTS = require('../bwt.js');
+var HTS = require('./bwt.js');
 var filesys = require('fs');
 filesys.readFile('./sample', {encoding: 'utf-8'},function(err, data) {
     data = data.split("\n").slice(1).join("");
