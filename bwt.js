@@ -439,6 +439,41 @@ HTS.lastOccurrenceFactory = function(lastColumn) {
     return N;
 };
 
+HTS.Occurrences = function(lastColumn) {
+    this._occur = {};
+    var N = HTS.lastOccurrenceFactory(lastColumn);
+    var idx, n;
+    for (var i = 0; i < lastColumn.length; i++) {
+        ch = lastColumn[i];
+        if (!(ch in this._occur)) {
+            this._occur[ch] = [];
+            idx = 0;
+            for (var j = 0; j < N[ch].length; j++) {
+                n = N[ch][j];
+                while (idx < n) {
+                    this._occur[ch].push(j);
+                    idx++;
+                }
+                this._occur[ch].push(j + 1);
+                idx++;
+            }
+            
+            // process rest
+            while (idx < lastColumn.length) {
+                this._occur[ch].push(j);
+                idx++;
+            }
+        }
+    }
+};
+
+HTS.Occurrences.prototype.check = function(ch, k) {
+    if (ch in this._occur && k >= 0 && k < this._occur[ch].length) {
+        return this._occur[ch][k];
+    }
+    return -1;
+};
+
 return HTS;
 })();
 

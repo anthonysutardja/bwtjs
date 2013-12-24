@@ -149,4 +149,33 @@ describe('HTS', function() {
             assert.equal(5, n[s[5]][0]);
         });
     });
+
+    describe('#Occurrences(text)', function() {
+        it('should correctly compute the occurence values', function() {
+            var occ = new HTS.Occurrences('arbbr$aa');
+            assert.equal(1, occ.check('a', 0));
+            assert.equal(1, occ.check('a', 1));
+            assert.equal(1, occ.check('a', 2));
+            assert.equal(1, occ.check('a', 3));
+            assert.equal(1, occ.check('a', 4));
+            assert.equal(1, occ.check('a', 5));
+            assert.equal(2, occ.check('a', 6));
+            assert.equal(3, occ.check('a', 7));
+
+            assert.equal(0, occ.check('b', 0));
+            assert.equal(0, occ.check('b', 1));
+            assert.equal(1, occ.check('b', 2));
+            assert.equal(2, occ.check('b', 3));
+            assert.equal(2, occ.check('b', 7));
+
+            assert.equal(0, occ.check('r', 0));
+            assert.equal(1, occ.check('r', 1));
+            assert.equal(1, occ.check('r', 2));
+            assert.equal(2, occ.check('r', 7));
+
+            // Out of bounds check
+            assert.equal(-1, occ.check('r', 8));
+            assert.equal(-1, occ.check('z', 0));
+        });
+    });
 });
