@@ -286,7 +286,7 @@ HTS.dc3 = function(text, characterSetLength) {
             } else if (r0Triple.get(1).ch < rPrimeTriple.get(1).ch) {
                 sortedArray.push(r0Triple.get(0).idx);
                 i += 1;
-            }else {
+            } else {
                 if (rPrimeRanks[r0Triple.get(2).hashCode()] > rPrimeRanks[rPrimeTriple.get(2).hashCode()]) {
                     sortedArray.push(rPrimeTriple.get(0).idx);
                     j += 1;
@@ -467,11 +467,66 @@ HTS.Occurrences = function(lastColumn) {
     }
 };
 
+/**
+ * The `occ` function described in lecture.
+ */
 HTS.Occurrences.prototype.check = function(ch, k) {
     if (ch in this._occur && k >= 0 && k < this._occur[ch].length) {
         return this._occur[ch][k];
     }
     return -1;
+};
+
+/**
+ * HTS.SearchFactory
+ * 
+ * Convert the text to BWT and return an instatiated HTS.Search object.
+ * @param {String} text is the text we wish to search.
+ */
+HTS.SearchFactory = function(text) {
+    // Process BWT
+    var bwtText = HTS.bwt(text);
+    return HTS.Search(text, bwtText);
+};
+
+/**
+ * HTS.Search
+ * @constructor
+ *
+ * Constructs a new Search object bound to its text and bwtText.
+ * @param {String} text
+ * @param {String} bwtText
+ */
+HTS.Search = function(text, bwtText) {
+    this.text = text;
+    this.lastColumn = bwtText;
+
+    this.firstColumn = '';
+
+    this.M = HTS.firstOccurrenceFactory(this.firstColumn);
+    this.occ = HTS.Occurrences(this.lastColumn);
+};
+
+HTS.Search.prototype.find = function(pattern) {
+    var indices = [];
+    return indices;
+};
+
+HTS.Search.prototype.start = function(pattern) {
+    // YOU NEED TO DO CHARACTER PAIR INDICES
+    if (pattern.length === 1) {
+        return '';
+    }
+    // Otherwise, calculate with recursion
+    return '';
+};
+
+HTS.Search.prototype.end = function(pattern) {
+    if (pattern.length === 1) {
+        return '';
+    }
+    // Otherwise, calculate with recursion
+    return '';
 };
 
 return HTS;
